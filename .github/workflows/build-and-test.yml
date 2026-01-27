@@ -22,14 +22,14 @@ jobs:
       - name: Assemble
         run: |
           mkdir -p build
-          nasm -felf64 asm/main.asm -o build/main.o
-          nasm -felf64 asm/print.asm -o build/print.o
+          nasm -felf64 main.asm -o build/main.o
+          nasm -felf64 print.asm -o build/print.o
 
       - name: Link
         run: |
-          ld -o build/asm_prog build/main.o build/print.o
+          ld build/main.o build/print.o -o build/asm_prog
 
       - name: Run program
         run: |
           ./build/asm_prog
-        continue-on-error: false # will fail the job if exit code != 0
+        continue-on-error: false
