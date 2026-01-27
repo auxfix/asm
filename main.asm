@@ -18,7 +18,6 @@ _start:
     mov rsi, msg_02_lm
     call print_msg
 
-
     mov rax, 60
     xor rdi, rdi
     syscall
