@@ -1,0 +1,35 @@
+name: Build and Run Assembly
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+
+    - name: Install NASM
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nasm
+
+    - name: Assemble
+      run: |
+        mkdir -p build
+        nasm -felf64 asm/main.asm -o build/main.o
+        nasm -felf64 asm/print.asm -o build/print.o
+
+    - name: Link
+      run: |
+        ld -o build/asm_prog build/main.o build/print.o
+
+    - name: Run program
+      run: |
+        ./build/asm_prog
+      continue-on-error: false   # will fail the job if exit code != 0
