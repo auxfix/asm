@@ -34,6 +34,14 @@ jobs:
           ./build/asm_prog
         continue-on-error: false
 
+      - name: Create tag
+        run: |
+          git config user.name "Tanel"
+          git config user.email "music.wave.form7@gmail.com"
+          TAG=v${{ github.run_number }}
+          git tag -a $TAG -m "Release $TAG"
+          git push origin $TAG
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
