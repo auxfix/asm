@@ -36,13 +36,19 @@ jobs:
         run: |
           ./build/asm_prog
 
+      - name: Get version from file
+        id: get_version
+        run: |
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Create tag
         if: success()
         id: create_tag
         run: |
           git config user.name "Tanel"
           git config user.email "music.wave.form7@gmail.com"
-          TAG=v${{ github.run_number }}
+          TAG=v${{ steps.get_version.outputs.version }}
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           git tag -a $TAG -m "Release $TAG"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git $TAG
