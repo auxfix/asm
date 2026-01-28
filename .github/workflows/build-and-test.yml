@@ -1,5 +1,8 @@
 name: Build and Run Assembly
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [main]
