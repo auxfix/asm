@@ -27,23 +27,30 @@ jobs:
 
       - name: Link
         run: |
-          ld build/main.o build/print.o -o build/asm_prog
+          ld -o build/asm_prog build/main.o build/print.o
 
       - name: Run program
         run: |
           ./build/asm_prog
-        continue-on-error: false
 
       - name: Create tag
+        if: success()
+        id: create_tag
         run: |
           git config user.name "Tanel"
           git config user.email "music.wave.form7@gmail.com"
           TAG=v${{ github.run_number }}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
           git tag -a $TAG -m "Release $TAG"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git $TAG
 
       - name: Release
+        if: success()
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.create_tag.outputs.tag }}
+          prerelease: true # optional – remove if you want a full release
+          body: |
+            Automated prerelease for run ${{ github.run_id }} (commit ${{ github.sha }}).
           files: |
             build/asm_prog
